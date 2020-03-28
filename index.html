@@ -1,0 +1,101 @@
+<html>
+<head>
+	<title>Servo/Slider</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/round-slider@1.4.0/dist/roundslider.min.css" rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/round-slider@1.4.0/dist/roundslider.min.js"></script>
+
+	<style>
+		#slidercontainer{
+			width: 260px;
+			margin: auto;
+		}
+		#containervalue{
+			width: 100px;
+			margin: auto;
+		}
+
+		#handle2 .rs-handle  {
+			background-color: transparent;
+			border: 8px solid transparent;
+			border-right-color: black;
+			margin: -8px 0 0 14px !important;
+		}
+		#handle2 .rs-handle:before  {
+			display: block;
+			content: " ";
+			position: absolute;
+			height: 12px;
+			width: 12px;
+			background: black;
+			right: -6px;
+			bottom: -6px;
+			border-radius: 100%;
+		}
+		#handle2 .rs-handle:after  {
+			display: block;
+			content: " ";
+			width: 106px;
+			position: absolute;
+			top: -1px;
+			right: 0px;
+			border-top: 2px dotted black;
+		}
+		#handle2 .rs-range-color  {
+			background-color: #8832cd;
+		}
+		#handle2 .rs-path-color  {
+			background-color: #ddc5f0;
+		}
+
+	</style>
+		
+</head>
+<body>
+   <div class="container theme-showcase" role="main">
+		<div class="jumbotron">
+        	<h2>Servo controled by a round slider</h1>
+        	<p>The Servo is connected to an arduino board. The position can be set with the slider</p>
+		</div>
+		<div class="row">
+			<div id="slidercontainer">
+				<div id="handle2"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div id="containervalue">
+				<p>Value: <span id="slidervalue"></span>%</p>
+			</div>
+		</div>		  
+	</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<script>
+	var socket = io();
+
+	$("#handle2").roundSlider({
+		sliderType: "min-range",
+		radius: 130,
+		showTooltip: false,
+		width: 16,
+		value: 49,
+		handleSize: 0,
+		handleShape: "square",
+		circleShape: "half-top",
+		beforeCreate: "traceEvent",
+    	create: "traceEvent",
+    	start: "traceEvent",
+    	stop: "traceEvent",
+    	change: "traceEvent",
+    	drag: "traceEvent"
+	});
+    function traceEvent(e) {
+		$('#slidervalue').html(e.value);
+		socket.emit("change pos", e.value);
+    	console.log(e.value);
+	}
+</script>
+</body>
+</html>
